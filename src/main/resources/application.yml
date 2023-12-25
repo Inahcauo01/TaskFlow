@@ -1,0 +1,19 @@
+spring:
+  #to enable colors when you run your app outside intellij
+  output:
+    ansi:
+      enabled: always
+
+  # Database Configuration
+  datasource:
+    url: jdbc:mysql://localhost:3306/task_flow?createDatabaseIfNotExist=true
+    username: root
+    password:
+  liquibase:
+    change-log: db/changelog/master.xml
+    enabled: true
+#  jpa:
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: create-drop
+#    generate-ddl: true
