@@ -2,17 +2,25 @@ package com.example.taskflow.mapper;
 
 import com.example.taskflow.domain.Tag;
 import com.example.taskflow.dto.TagDto;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import lombok.Builder;
+import lombok.Data;
 
-import java.util.List;
+@Data
+@Builder
+public class TagMapper {
+    private TagMapper() {}
 
-@Mapper
-public interface TagMapper {
-    TagMapper INSTANCE = Mappers.getMapper(TagMapper.class);
+    private static TagDto toDto(Tag tag){
+        return TagDto.builder()
+                .id(tag.getId())
+                .name(tag.getName())
+                .build();
+    }
 
-    Tag toEntity(TagDto tagDto);
-    TagDto toDto(Tag tag);
-    List<TagDto> tagsToDTOs(List<Tag> tags);
-
+    private static Tag toEntity(TagDto tagDto){
+        return Tag.builder()
+                .id(tagDto.getId())
+                .name(tagDto.getName())
+                .build();
+    }
 }

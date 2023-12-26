@@ -1,6 +1,5 @@
 package com.example.taskflow.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,14 +25,11 @@ public class User {
     @Column(unique = true)
     private String email;
 
-    @JsonIgnore
-    private String password;
-
     @OneToMany(mappedBy = "createdBy")
     private Set<Task> createdTasks;
 
     @OneToMany(mappedBy = "assignedTo")
     private Set<Task> assignedTasks;
 
-    private boolean isAdmin;
+    private boolean admin;
 }

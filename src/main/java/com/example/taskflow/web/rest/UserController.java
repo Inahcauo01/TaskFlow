@@ -4,14 +4,13 @@ import com.example.taskflow.dto.UserDto;
 import com.example.taskflow.mapper.UserMapper;
 import com.example.taskflow.service.UserService;
 import com.example.taskflow.utils.Response;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -22,7 +21,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<Response<List<UserDto>>> getAllUsers(){
         Response<List<UserDto>> response = new Response<>();
-        List<UserDto> userList = UserMapper.INSTANCE.usersToDTOs(userService.findAll());
+        List<UserDto> userList = userService.findAll().stream().map(UserMapper::toDto).collect(Collectors.toList());
         response.setResult(userList);
         if (userList.isEmpty())
             response.setMessage("There are no users");
@@ -30,9 +29,9 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Response<UserDto>> createUser(UserDto userDto){
+    public ResponseEntity<Response<UserDto>> createUser(@Valid @RequestBody UserDto userDto){
         Response<UserDto> response = new Response<>();
-        UserDto user = UserMapper.INSTANCE.toDto(userService.save(UserMapper.INSTANCE.toEntity(userDto)));
+        UserDto user = UserMapper.toDto(userService.save(UserMapper.toEntity(userDto)));
         response.setResult(user);
         response.setMessage("User created successfully");
         return ResponseEntity.ok().body(response);

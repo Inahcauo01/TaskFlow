@@ -2,17 +2,33 @@ package com.example.taskflow.mapper;
 
 import com.example.taskflow.domain.User;
 import com.example.taskflow.dto.UserDto;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import lombok.Builder;
+import lombok.Data;
 
-import java.util.List;
+@Data
+@Builder
+public class UserMapper {
+    private UserMapper() {}
 
-@Mapper
-public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+    public static UserDto toDto(User user){
+        return UserDto.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .admin(user.isAdmin())
+                .build();
+    }
 
-    User toEntity(UserDto userDto);
-    UserDto toDto(User user);
-
-    List<UserDto> usersToDTOs(List<User> users);
+    public static User toEntity(UserDto userDto){
+        return User.builder()
+                .id(userDto.getId())
+                .username(userDto.getUsername())
+                .firstName(userDto.getFirstName())
+                .lastName(userDto.getLastName())
+                .email(userDto.getEmail())
+                .admin(userDto.isAdmin())
+                .build();
+    }
 }

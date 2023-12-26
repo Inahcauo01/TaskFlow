@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1703604418848-2" author="Youcode (generated)">
+        <dropColumn columnName="is_admin" tableName="user"/>
+    </changeSet>
+    <changeSet id="1703604418848-1" author="Youcode (generated)">
+        <addNotNullConstraint columnDataType="BOOLEAN" columnName="admin" tableName="user" validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>

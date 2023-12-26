@@ -22,6 +22,6 @@ public class TaskDto {
 
     private Set<TagDto> tags;
 
-    private UserDto createdBy;
-    private UserDto assignedTo;
+    private String createdBy;
+    private String assignedTo;
 }
