@@ -14,7 +14,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = {"firstName", "lastName"})})
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
