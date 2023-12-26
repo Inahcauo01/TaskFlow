@@ -1,6 +1,7 @@
 package com.example.taskflow.service.impl;
 
 import com.example.taskflow.domain.Tag;
+import com.example.taskflow.dto.TagDto;
 import com.example.taskflow.repository.TagRepository;
 import com.example.taskflow.service.TagService;
 import com.example.taskflow.utils.CustomError;
@@ -44,5 +45,15 @@ public class TagServiceImpl implements TagService {
         if (!tagRepository.existsById(id))
             throw new ValidationException(new CustomError("id", "Tag with id " + id + " not found"));
         tagRepository.deleteById(id);
+    }
+
+    @Override
+    public Tag findOrCreateTag(TagDto tagName) {
+        return tagRepository.findByName(tagName.getName()).orElseGet(
+                () -> save(Tag.builder()
+                            .name(tagName.getName())
+                            .build()
+                    )
+        );
     }
 }

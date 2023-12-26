@@ -44,4 +44,11 @@ public class UserServiceImpl implements UserService {
             throw new ValidationException(new CustomError("id", "User not found"));
         userRepository.deleteById(id);
     }
+
+    @Override
+    public User findByUsername(String assignedTo) throws ValidationException {
+        return userRepository.findByUsername(assignedTo).orElseThrow(
+                () -> new ValidationException(new CustomError("username", "User not found"))
+        );
+    }
 }

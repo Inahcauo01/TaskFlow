@@ -8,9 +8,11 @@ import java.util.List;
 
 @Service
 public interface UserService {
-    public List<User> findAll();
-    public User findById(Long id) throws ValidationException;
-    public User save(User user);
-    public User update(User user);
-    public void deleteById(Long id) throws ValidationException;
+    List<User> findAll();
+    User findById(Long id) throws ValidationException;
+    User save(User user);
+    User update(User user);
+    void deleteById(Long id) throws ValidationException;
+
+    User findByUsername(String assignedTo) throws ValidationException;
 }

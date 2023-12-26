@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -21,7 +20,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<Response<List<UserDto>>> getAllUsers(){
         Response<List<UserDto>> response = new Response<>();
-        List<UserDto> userList = userService.findAll().stream().map(UserMapper::toDto).collect(Collectors.toList());
+        List<UserDto> userList = userService.findAll().stream().map(UserMapper::toDto).toList();
         response.setResult(userList);
         if (userList.isEmpty())
             response.setMessage("There are no users");
