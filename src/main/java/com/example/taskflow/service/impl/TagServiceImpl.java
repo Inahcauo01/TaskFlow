@@ -29,8 +29,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag save(Tag tag) {
-        // TODO: validate tag
+    public Tag save(Tag tag) throws ValidationException {
+        validateTage(tag);
         return tagRepository.save(tag);
     }
 
@@ -50,10 +50,25 @@ public class TagServiceImpl implements TagService {
     @Override
     public Tag findOrCreateTag(TagDto tagName) {
         return tagRepository.findByName(tagName.getName()).orElseGet(
-                () -> save(Tag.builder()
-                            .name(tagName.getName())
-                            .build()
-                    )
+                () -> {
+                    try {
+                        return save(Tag.builder()
+                                    .name(tagName.getName())
+                                    .build()
+                            );
+                    } catch (ValidationException e) {
+                        throw new IllegalArgumentException(e);
+                    }
+                }
         );
+    }
+
+    private void validateTage(Tag tag) throws ValidationException {
+    // check if tag name is empty
+        if (tag.getName().isEmpty())
+            throw new ValidationException(new CustomError("name", "Tag name cannot be empty"));
+    // check if tag name is already taken
+        if (tagRepository.findByName(tag.getName()).isPresent())
+            throw new ValidationException(new CustomError("name", "Tag name already taken"));
     }
 }

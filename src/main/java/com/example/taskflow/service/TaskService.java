@@ -10,7 +10,7 @@ import java.util.List;
 public interface TaskService {
     public List<Task> findAll();
     public Task findById(Long id) throws ValidationException;
-    public Task save(Task task);
+    public Task save(Task task) throws ValidationException;
     public Task update(Task task);
     public void deleteById(Long id) throws ValidationException;
 }

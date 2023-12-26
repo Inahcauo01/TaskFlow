@@ -11,7 +11,7 @@ import java.util.List;
 public interface TagService {
     List<Tag> findAll();
     Tag findById(Long id) throws ValidationException;
-    Tag save(Tag tag);
+    Tag save(Tag tag) throws ValidationException;
     Tag update(Tag tag);
     void deleteById(Long id) throws ValidationException;
 
