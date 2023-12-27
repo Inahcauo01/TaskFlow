@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.Set;
 
 @Entity
@@ -31,5 +34,13 @@ public class User {
     @OneToMany(mappedBy = "assignedTo")
     private Set<Task> assignedTasks;
 
-    private boolean admin;
+    @ManyToMany
+    private Collection<Role> authorities;
+    private String password;
+    private boolean accountNonExpired = true;
+    private boolean accountNonLocked = true;
+    private boolean credentialsNonExpired = true;
+    private boolean enabled = true;
+
+
 }

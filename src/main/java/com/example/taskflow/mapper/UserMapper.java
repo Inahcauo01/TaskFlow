@@ -17,7 +17,6 @@ public class UserMapper {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
-                .admin(user.isAdmin())
                 .build();
     }
 
@@ -28,7 +27,6 @@ public class UserMapper {
                 .firstName(userDto.getFirstName())
                 .lastName(userDto.getLastName())
                 .email(userDto.getEmail())
-                .admin(userDto.isAdmin())
                 .build();
     }
 }

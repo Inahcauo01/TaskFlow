@@ -54,8 +54,8 @@ public class TaskServiceImpl implements TaskService {
         if (task.getStartDate().isBefore(task.getStartDate().minusDays(3)))
             throw new ValidationException(new CustomError("startDate", "Start date must be at least 3 days from now"));
         // check if created by and assigned to are the same or created by have admin true
-        if (!task.getCreatedBy().getUsername().equals(task.getAssignedTo().getUsername()) || !task.getCreatedBy().isAdmin())
-            throw new ValidationException(new CustomError("createdBy", "User don't have permission to create task for other users"));
+//        if (!task.getCreatedBy().getUsername().equals(task.getAssignedTo().getUsername()) || !task.getCreatedBy().isAdmin())
+//            throw new ValidationException(new CustomError("createdBy", "User don't have permission to create task for other users"));
         // check if task title is unique
         if (taskRepository.existsByTitle(task.getTitle()))
             throw new ValidationException(new CustomError("title", "Task with title " + task.getTitle() + " already exists"));
