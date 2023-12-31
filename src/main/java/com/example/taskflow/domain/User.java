@@ -30,7 +30,7 @@ public class User implements UserDetails {
     private String password;
     private boolean enabled = true;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> authorities;
 
     @OneToMany(mappedBy = "createdBy")

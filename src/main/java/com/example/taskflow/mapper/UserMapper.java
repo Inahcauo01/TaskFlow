@@ -4,6 +4,7 @@ import com.example.taskflow.domain.Task;
 import com.example.taskflow.domain.User;
 import com.example.taskflow.dto.RoleDto;
 import com.example.taskflow.dto.UserDto;
+import com.example.taskflow.dto.responce.UserDtoResponse;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,9 +17,8 @@ import java.util.stream.Collectors;
 public class UserMapper {
     private UserMapper() {}
 
-    public static UserDto toDto(User user){
-        return UserDto.builder()
-                .id(user.getId())
+    public static UserDtoResponse toDto(User user){
+        return UserDtoResponse.builder()
                 .username(user.getUsername())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
@@ -26,7 +26,6 @@ public class UserMapper {
                 .createdTasks(user.getCreatedTasks().stream().map(Task::getTitle).collect(Collectors.toSet()))
                 .assignedTasks(user.getAssignedTasks().stream().map(Task::getTitle).collect(Collectors.toSet()))
                 .enabled(user.isEnabled())
-                .password(user.getPassword())
                 .build();
     }
 
