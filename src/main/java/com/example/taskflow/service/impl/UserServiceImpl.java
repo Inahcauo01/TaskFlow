@@ -7,7 +7,6 @@ import com.example.taskflow.service.UserService;
 import com.example.taskflow.utils.CustomError;
 import com.example.taskflow.utils.ValidationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -53,19 +52,12 @@ public class UserServiceImpl implements UserService{
         userRepository.deleteById(id);
     }
 
-    @Override
+
     public User findByUsername(String assignedTo) throws ValidationException {
         return userRepository.findByUsername(assignedTo).orElseThrow(
                 () -> new ValidationException(new CustomError("username", "User not found"))
         );
     }
 
-
-    @Override
-    public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username).orElseThrow(
-                () -> new UsernameNotFoundException("User not found with username: " + username)
-        );
-    }
 
 }
