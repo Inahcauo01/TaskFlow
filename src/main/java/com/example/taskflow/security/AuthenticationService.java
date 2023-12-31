@@ -37,7 +37,6 @@ public class AuthenticationService {
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .enabled(true)
-//                .authorities(getAuthorities(request.getRoles()))
                 .build();
 
         // Set the saved roles to the user
