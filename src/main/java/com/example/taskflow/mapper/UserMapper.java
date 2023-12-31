@@ -1,9 +1,15 @@
 package com.example.taskflow.mapper;
 
+import com.example.taskflow.domain.Task;
 import com.example.taskflow.domain.User;
+import com.example.taskflow.dto.RoleDto;
 import com.example.taskflow.dto.UserDto;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -16,8 +22,11 @@ public class UserMapper {
                 .username(user.getUsername())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .email(user.getEmail())
-                .admin(user.isAdmin())
+                .roles(user.getAuthorities().stream().map(SimpleGrantedAuthority::getAuthority).collect(Collectors.toSet()))
+                .createdTasks(user.getCreatedTasks().stream().map(Task::getTitle).collect(Collectors.toSet()))
+                .assignedTasks(user.getAssignedTasks().stream().map(Task::getTitle).collect(Collectors.toSet()))
+                .enabled(user.isEnabled())
+                .password(user.getPassword())
                 .build();
     }
 
@@ -27,8 +36,18 @@ public class UserMapper {
                 .username(userDto.getUsername())
                 .firstName(userDto.getFirstName())
                 .lastName(userDto.getLastName())
-                .email(userDto.getEmail())
-                .admin(userDto.isAdmin())
+                .password(userDto.getPassword())
+                .enabled(userDto.isEnabled())
+                .authorities(
+                        Set.of(
+                                RoleMapper.toEntity(
+                                        RoleDto.builder()
+                                                .authority("ROLE_USER")
+                                                .build()
+                                )
+                        )
+                )
                 .build();
     }
+
 }

@@ -1,12 +1,15 @@
 package com.example.taskflow.web.rest;
 
+import com.example.taskflow.domain.User;
 import com.example.taskflow.dto.UserDto;
 import com.example.taskflow.mapper.UserMapper;
 import com.example.taskflow.service.UserService;
 import com.example.taskflow.utils.Response;
+import com.example.taskflow.utils.ValidationException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,11 +31,12 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Response<UserDto>> createUser(@Valid @RequestBody UserDto userDto){
+    public ResponseEntity<Response<UserDto>> createUser(@Valid @RequestBody UserDto userDto) throws ValidationException {
         Response<UserDto> response = new Response<>();
         UserDto user = UserMapper.toDto(userService.save(UserMapper.toEntity(userDto)));
         response.setResult(user);
         response.setMessage("User created successfully");
         return ResponseEntity.ok().body(response);
     }
+
 }

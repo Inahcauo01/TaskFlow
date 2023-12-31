@@ -1,5 +1,4 @@
-package com.example.taskflow.dto;
-
+package com.example.taskflow.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,22 +8,15 @@ import lombok.NoArgsConstructor;
 import java.util.Set;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class UserDto {
-    private Long id;
+public class RegisterRequest {
 
     private String firstName;
     private String lastName;
     private String username;
     private String password;
-    private boolean enabled = true;
-
     private Set<String> roles;
-
-    private Set<String> createdTasks;
-
-    private Set<String> assignedTasks;
 
 }
