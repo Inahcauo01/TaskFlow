@@ -29,6 +29,7 @@ public class UserController {
         return ResponseEntity.ok().body(response);
     }
 
+
     @PostMapping
     public ResponseEntity<Response<UserDtoResponse>> createUser(@Valid @RequestBody UserDto userDto) throws ValidationException {
         Response<UserDtoResponse> response = new Response<>();

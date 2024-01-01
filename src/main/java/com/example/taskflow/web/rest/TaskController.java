@@ -39,19 +39,18 @@ public class TaskController {
         return ResponseEntity.ok().body(response);
     }
 
-
     @PostMapping
     public ResponseEntity<Response<TaskDto>> createTask(@RequestBody @Valid TaskDto taskDto) throws ValidationException {
         Response<TaskDto> response = new Response<>();
         Task task = TaskMapper.toEntity(taskDto);
-        User createdByUser = userService.findByUsername(taskDto.getCreatedBy());
+//        User createdByUser = userService.findByUsername(taskDto.getCreatedBy());
         User assignedToUser = userService.findByUsername(taskDto.getAssignedTo());
 
         Set<Tag> tags = taskDto.getTags().stream()
                 .map(tagName -> tagService.findOrCreateTag(tagName))
                 .collect(Collectors.toSet());
 
-        task.setCreatedBy(createdByUser);
+//        task.setCreatedBy(createdByUser);
         task.setAssignedTo(assignedToUser);
         task.setTags(tags);
         TaskDto savedTaskDto = TaskMapper.toDto(taskService.save(task));
