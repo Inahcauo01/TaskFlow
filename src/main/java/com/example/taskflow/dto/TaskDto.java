@@ -43,7 +43,6 @@ public class TaskDto {
     private Set<TagDto> tags;
     private String createdBy;
 
-    @NotBlank(message = "Assigned to is required")
     private String assignedTo;
 
     @Builder.Default

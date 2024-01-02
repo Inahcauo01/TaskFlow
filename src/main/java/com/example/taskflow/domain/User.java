@@ -40,8 +40,8 @@ public class User implements UserDetails {
     private Set<Task> assignedTasks;
 
 
-    @Column(nullable = false)
-    private int jetons = 2;
+    @Builder.Default
+    private Integer jetons = 2;
 
     @Override
     public List<SimpleGrantedAuthority> getAuthorities() {

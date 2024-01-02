@@ -18,5 +18,5 @@ public class RegisterRequest {
     private String username;
     private String password;
     private Set<String> roles;
-
+    private Integer jetons = 2;
 }

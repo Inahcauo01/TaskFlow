@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -40,9 +39,10 @@ public class Task {
     @JoinColumn(name = "created_by_id")
     private User createdBy;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "assigned_to_id")
     private User assignedTo;
 
-    private boolean remplaced;
+    @Builder.Default
+    private boolean remplaced = false;
 }

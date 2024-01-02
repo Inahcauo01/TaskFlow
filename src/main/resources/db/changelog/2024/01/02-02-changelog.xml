@@ -13,11 +13,6 @@
     <changeSet id="1704157945690-2" author="Youcode (generated)">
         <addNotNullConstraint columnDataType="INT" columnName="jetons" tableName="user"/>
     </changeSet>
-    <changeSet id="1704157945690-3" author="Youcode (generated)">
-        <addColumn tableName="task">
-            <column name="remplaced" type="BOOLEAN"/>
-        </addColumn>
-    </changeSet>
     <changeSet id="1704157945690-4" author="Youcode (generated)">
         <addNotNullConstraint columnDataType="BOOLEAN" columnName="remplaced" tableName="task"/>
     </changeSet>

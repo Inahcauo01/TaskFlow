@@ -22,11 +22,15 @@ public class TaskMapper {
                 .endDate(task.getEndDate())
                 .tags(task.getTags().stream().map(TagMapper::toDto).collect(Collectors.toSet()))
                 .createdBy(task.getCreatedBy().getUsername())
-                .assignedTo(task.getAssignedTo().getUsername())
+                .assignedTo((task.getAssignedTo() != null) ? task.getAssignedTo().getUsername() : null)
                 .build();
     }
 
     public static Task toEntity(TaskDto taskDto) {
+        User assignedToUser = (taskDto.getAssignedTo() != null) ?
+                User.builder().username(taskDto.getAssignedTo()).build() :
+                null;
+
         return Task.builder()
                 .id(taskDto.getId())
                 .title(taskDto.getTitle())
@@ -38,9 +42,7 @@ public class TaskMapper {
                 .createdBy(User.builder()
                             .username(taskDto.getCreatedBy())
                             .build())
-                .assignedTo(User.builder()
-                                .username(taskDto.getAssignedTo())
-                                .build())
+                .assignedTo(assignedToUser)
                 .build();
     }
 }

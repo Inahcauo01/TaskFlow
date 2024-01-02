@@ -19,8 +19,6 @@ import java.util.List;
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
 
-    private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
 
     @Override
     public List<Task> findAll() {
@@ -39,6 +37,7 @@ public class TaskServiceImpl implements TaskService {
         validateTask(task);
 
         // get current user and set it as createdBy
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
         task.setCreatedBy(currentUser);
 
@@ -64,11 +63,13 @@ public class TaskServiceImpl implements TaskService {
 
     private void validateTask(Task task) throws ValidationException {
         // not allow to assign task to other user if not admin
-        User assignedToUser = task.getAssignedTo();
-        User currentUser = (User) authentication.getPrincipal();
-        if (assignedToUser != null && !assignedToUser.equals(currentUser) && !(currentUser).hasRole("ROLE_ADMIN"))
-            throw new ValidationException(new CustomError("assigned to", "Not allowed to assign task to other user if not admin"));
-
+        if (task.getAssignedTo() != null) {
+            User assignedToUser = task.getAssignedTo();
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User currentUser = (User) authentication.getPrincipal();
+            if (!assignedToUser.equals(currentUser) && !(currentUser).hasRole("ROLE_ADMIN"))
+                throw new ValidationException(new CustomError("assigned to", "Not allowed to assign task to other user if not admin"));
+        }
 
         // check if end date is after start date
         if (task.getEndDate().isBefore(task.getStartDate()))
@@ -94,6 +95,7 @@ public class TaskServiceImpl implements TaskService {
             throw new ValidationException(new CustomError("Status", "Not allowed to change status after end date"));
 
         // not allow to change assignedTo if not admin
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
         if (task.getAssignedTo() != null && !currentUser.hasRole("ROLE_ADMIN"))
             throw new ValidationException(new CustomError("assignedTo", "Not allowed to change assignedTo"));

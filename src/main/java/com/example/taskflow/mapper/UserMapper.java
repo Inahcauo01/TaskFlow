@@ -26,6 +26,7 @@ public class UserMapper {
                 .createdTasks(user.getCreatedTasks().stream().map(Task::getTitle).collect(Collectors.toSet()))
                 .assignedTasks(user.getAssignedTasks().stream().map(Task::getTitle).collect(Collectors.toSet()))
                 .enabled(user.isEnabled())
+                .jetons(user.getJetons())
                 .build();
     }
 
@@ -46,6 +47,7 @@ public class UserMapper {
                                 )
                         )
                 )
+                .jetons(userDto.getJetons())
                 .build();
     }
 

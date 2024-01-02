@@ -22,4 +22,6 @@ public class UserDtoResponse {
     private Set<String> createdTasks;
 
     private Set<String> assignedTasks;
+
+    private Integer jetons;
 }
