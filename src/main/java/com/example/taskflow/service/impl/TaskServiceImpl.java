@@ -83,6 +83,23 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void validateUpdateTask(Task task) throws ValidationException {
+        // not allow to change createdBy
+        if (task.getCreatedBy() != null)
+            throw new ValidationException(new CustomError("createdBy", "Not allowed to change createdBy"));
+
+        // not allow to change status after end date
+        if (task.getStatus() != null && task.getEndDate().isBefore(task.getEndDate()))
+            throw new ValidationException(new CustomError("status", "Not allowed to change status after end date"));
+
+        // not allow to change assignedTo if not admin
+        User currentUser = (User) authentication.getPrincipal();
+        if (task.getAssignedTo() != null && !currentUser.hasRole("ROLE_ADMIN"))
+            throw new ValidationException(new CustomError("assignedTo", "Not allowed to change assignedTo"));
+
+        // not allow to change assignedTo if remplaced is true
+        if (task.getAssignedTo() != null && task.isRemplaced())
+            throw new ValidationException(new CustomError("assignedTo", "Not allowed to change assignedTo if remplaced is true"));
+
         // check if changed status is changed to DONE after end date
         if (task.getStatus().toString().equals("DONE") && task.getEndDate().isAfter(task.getEndDate()))
             throw new ValidationException(new CustomError("status", "Status cannot be changed to DONE after end date"));
