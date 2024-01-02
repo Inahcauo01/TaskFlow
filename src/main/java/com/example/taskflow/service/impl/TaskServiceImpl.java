@@ -5,6 +5,7 @@ import com.example.taskflow.domain.User;
 import com.example.taskflow.domain.enums.TaskStatus;
 import com.example.taskflow.repository.TaskRepository;
 import com.example.taskflow.service.TaskService;
+import com.example.taskflow.service.UserService;
 import com.example.taskflow.utils.CustomError;
 import com.example.taskflow.utils.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
+    private final UserService userService;
 
 
     @Override
@@ -61,6 +63,16 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.deleteById(id);
     }
 
+    @Override
+    public Task assignTask(Long id, String username) throws ValidationException {
+        Task task = findById(id);
+        User assignedToUser = userService.findByUsername(username);
+        if (task.getAssignedTo() != null && task.getAssignedTo().equals(assignedToUser))
+            throw new ValidationException(new CustomError("assigned to", "Task already assigned to this user"));
+        task.setAssignedTo(assignedToUser);
+        return update(task);
+    }
+
     private void validateTask(Task task) throws ValidationException {
         // not allow to assign task to other user if not admin
         if (task.getAssignedTo() != null) {
@@ -86,10 +98,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void validateUpdateTask(Task task) throws ValidationException {
-        // not allow to change createdBy
-        if (task.getCreatedBy() != null)
-            throw new ValidationException(new CustomError("createdBy", "Not allowed to change createdBy"));
-
         // not allow to change status after end date
         if (task.getStatus() != null && task.getEndDate().isBefore(task.getEndDate()))
             throw new ValidationException(new CustomError("Status", "Not allowed to change status after end date"));

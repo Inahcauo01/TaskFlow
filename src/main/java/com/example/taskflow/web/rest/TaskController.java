@@ -8,11 +8,15 @@ import com.example.taskflow.mapper.TaskMapper;
 import com.example.taskflow.service.TagService;
 import com.example.taskflow.service.TaskService;
 import com.example.taskflow.service.UserService;
+import com.example.taskflow.utils.CustomError;
 import com.example.taskflow.utils.Response;
 import com.example.taskflow.utils.ValidationException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -64,19 +68,36 @@ public class TaskController {
     public ResponseEntity<Response<TaskDto>> updateTask(@PathVariable Long id, @RequestBody @Valid TaskDto taskDto) throws ValidationException {
         Response<TaskDto> response = new Response<>();
         Task task = TaskMapper.toEntity(taskDto);
-        User assignedToUser = userService.findByUsername(taskDto.getAssignedTo());
+        if (task.getAssignedTo() != null){
+            User assignedToUser = userService.findByUsername(taskDto.getAssignedTo());
+            task.setAssignedTo(assignedToUser);
+        }
 
         Set<Tag> tags = taskDto.getTags().stream()
                 .map(tagName -> tagService.findOrCreateTag(tagName))
                 .collect(Collectors.toSet());
 
         task.setId(id);
-        task.setAssignedTo(assignedToUser);
         task.setTags(tags);
         TaskDto updatedTaskDto = TaskMapper.toDto(taskService.update(task));
 
         response.setResult(updatedTaskDto);
         response.setMessage("Task updated successfully");
         return ResponseEntity.ok().body(response);
+    }
+
+    @PutMapping("/{id}/assign/{username}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Response<TaskDto>> assignTask(@PathVariable Long id, @PathVariable String username) throws ValidationException {
+        Response<TaskDto> response = new Response<>();
+        try {
+            TaskDto updatedTaskDto = TaskMapper.toDto(taskService.assignTask(id, username));
+            response.setResult(updatedTaskDto);
+            response.setMessage("Task assigned successfully");
+            return ResponseEntity.ok().body(response);
+        } catch (AccessDeniedException ex) {
+            response.setMessage("Access denied. Only admins are allowed to perform this operation.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        }
     }
 }

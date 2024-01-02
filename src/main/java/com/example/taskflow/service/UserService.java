@@ -2,7 +2,6 @@ package com.example.taskflow.service;
 
 import com.example.taskflow.domain.User;
 import com.example.taskflow.utils.ValidationException;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
