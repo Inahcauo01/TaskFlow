@@ -1,7 +1,6 @@
 package com.example.taskflow.service;
 
 import com.example.taskflow.domain.Task;
-import com.example.taskflow.dto.TaskDto;
 import com.example.taskflow.utils.ValidationException;
 import org.springframework.stereotype.Service;
 
@@ -16,4 +15,6 @@ public interface TaskService {
     void deleteById(Long id) throws ValidationException;
 
     Task assignTask(Long id, String username) throws ValidationException;
+
+    List<Task> findMyTasks();
 }

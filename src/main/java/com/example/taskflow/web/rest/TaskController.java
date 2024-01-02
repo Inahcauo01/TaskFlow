@@ -64,6 +64,21 @@ public class TaskController {
         return ResponseEntity.ok().body(response);
     }
 
+    @PutMapping("/{id}/assign/{username}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Response<TaskDto>> assignTask(@PathVariable Long id, @PathVariable String username) throws ValidationException {
+        Response<TaskDto> response = new Response<>();
+        try {
+            TaskDto updatedTaskDto = TaskMapper.toDto(taskService.assignTask(id, username));
+            response.setResult(updatedTaskDto);
+            response.setMessage("Task assigned successfully");
+            return ResponseEntity.ok().body(response);
+        } catch (AccessDeniedException ex) {
+            response.setMessage("Access denied. Only admins are allowed to perform this operation.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        }
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Response<TaskDto>> updateTask(@PathVariable Long id, @RequestBody @Valid TaskDto taskDto) throws ValidationException {
         Response<TaskDto> response = new Response<>();
@@ -86,18 +101,15 @@ public class TaskController {
         return ResponseEntity.ok().body(response);
     }
 
-    @PutMapping("/{id}/assign/{username}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Response<TaskDto>> assignTask(@PathVariable Long id, @PathVariable String username) throws ValidationException {
-        Response<TaskDto> response = new Response<>();
-        try {
-            TaskDto updatedTaskDto = TaskMapper.toDto(taskService.assignTask(id, username));
-            response.setResult(updatedTaskDto);
-            response.setMessage("Task assigned successfully");
-            return ResponseEntity.ok().body(response);
-        } catch (AccessDeniedException ex) {
-            response.setMessage("Access denied. Only admins are allowed to perform this operation.");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
-        }
+    @GetMapping("/my-tasks")
+    public ResponseEntity<Response<List<TaskDto>>> findMyTasks() throws ValidationException {
+        Response<List<TaskDto>> response = new Response<>();
+        List<TaskDto> taskList = taskService.findMyTasks().stream()
+                .map(TaskMapper::toDto)
+                .toList();
+        response.setResult(taskList);
+        if (taskList.isEmpty())
+            response.setMessage("You have no assigned tasks in this moment");
+        return ResponseEntity.ok().body(response);
     }
 }

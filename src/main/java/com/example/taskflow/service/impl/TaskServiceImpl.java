@@ -73,6 +73,13 @@ public class TaskServiceImpl implements TaskService {
         return update(task);
     }
 
+    @Override
+    public List<Task> findMyTasks() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        return taskRepository.findByAssignedTo(currentUser);
+    }
+
     private void validateTask(Task task) throws ValidationException {
         // not allow to assign task to other user if not admin
         if (task.getAssignedTo() != null) {
