@@ -112,4 +112,14 @@ public class TaskController {
             response.setMessage("You have no assigned tasks in this moment");
         return ResponseEntity.ok().body(response);
     }
+
+    // remplace a task
+    @PutMapping("/{id}/remplace")
+    public ResponseEntity<Response<TaskDto>> remplaceTask(@PathVariable Long id) throws ValidationException {
+        Response<TaskDto> response = new Response<>();
+        TaskDto updatedTaskDto = TaskMapper.toDto(taskService.remplaceTask(id));
+        response.setResult(updatedTaskDto);
+        response.setMessage("Demanded task remplaced successfully");
+        return ResponseEntity.ok().body(response);
+    }
 }

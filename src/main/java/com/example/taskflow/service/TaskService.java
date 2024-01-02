@@ -17,4 +17,6 @@ public interface TaskService {
     Task assignTask(Long id, String username) throws ValidationException;
 
     List<Task> findMyTasks();
+
+    Task remplaceTask(Long id) throws ValidationException;
 }

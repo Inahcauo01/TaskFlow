@@ -37,22 +37,16 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task save(Task task) throws ValidationException {
         validateTask(task);
-
         // get current user and set it as createdBy
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
-        task.setCreatedBy(currentUser);
-
+        task.setCreatedBy(getCurrentUser());
         return taskRepository.save(task);
     }
 
     @Override
     public Task update(Task task) throws ValidationException {
         validateUpdateTask(task);
-
         if (task.getEndDate().isBefore(task.getEndDate()))
             task.setStatus(TaskStatus.valueOf("UNDONE"));
-
         return taskRepository.save(task);
     }
 
@@ -75,17 +69,27 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> findMyTasks() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
+        User currentUser = getCurrentUser();
         return taskRepository.findByAssignedTo(currentUser);
+    }
+
+    @Override
+    public Task remplaceTask(Long id) throws ValidationException {
+        User currentUser = getCurrentUser();
+
+        Task task = findById(id);
+        task.setRemplaced(true);
+        if (currentUser.getJetons()<1)
+            throw new ValidationException(new CustomError("jetons", "You don't have enough jetons"));
+        currentUser.setJetons(currentUser.getJetons()-1);
+        return update(task);
     }
 
     private void validateTask(Task task) throws ValidationException {
         // not allow to assign task to other user if not admin
         if (task.getAssignedTo() != null) {
             User assignedToUser = task.getAssignedTo();
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            User currentUser = (User) authentication.getPrincipal();
+            User currentUser = getCurrentUser();
             if (!assignedToUser.equals(currentUser) && !(currentUser).hasRole("ROLE_ADMIN"))
                 throw new ValidationException(new CustomError("assigned to", "Not allowed to assign task to other user if not admin"));
         }
@@ -110,8 +114,7 @@ public class TaskServiceImpl implements TaskService {
             throw new ValidationException(new CustomError("Status", "Not allowed to change status after end date"));
 
         // not allow to change assignedTo if not admin
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
+        User currentUser = getCurrentUser();
         if (task.getAssignedTo() != null && !currentUser.hasRole("ROLE_ADMIN"))
             throw new ValidationException(new CustomError("assignedTo", "Not allowed to change assignedTo"));
 
@@ -128,5 +131,10 @@ public class TaskServiceImpl implements TaskService {
             throw new ValidationException(new CustomError("status", "Status cannot be changed to IN_PROGRESS before start date"));
 
 
+    }
+
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (User) authentication.getPrincipal();
     }
 }
