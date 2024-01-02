@@ -39,7 +39,6 @@ public class TaskServiceImpl implements TaskService {
         validateTask(task);
 
         // get current user and set it as createdBy
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
         task.setCreatedBy(currentUser);
 
@@ -64,6 +63,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void validateTask(Task task) throws ValidationException {
+        // not allow to assign task to other user if not admin
+        User assignedToUser = task.getAssignedTo();
+        User currentUser = (User) authentication.getPrincipal();
+        if (assignedToUser != null && !assignedToUser.equals(currentUser) && !(currentUser).hasRole("ROLE_ADMIN"))
+            throw new ValidationException(new CustomError("assigned to", "Not allowed to assign task to other user if not admin"));
+
+
         // check if end date is after start date
         if (task.getEndDate().isBefore(task.getStartDate()))
             throw new ValidationException(new CustomError("endDate", "End date must be after start date"));
@@ -76,10 +82,6 @@ public class TaskServiceImpl implements TaskService {
         if (taskRepository.existsByTitle(task.getTitle()))
             throw new ValidationException(new CustomError("title", "Task with title " + task.getTitle() + " already exists"));
 
-        // check if assigned to user must be current user or admin
-        User currentUser = (User) authentication.getPrincipal();
-        if (!task.getAssignedTo().equals(currentUser) && !currentUser.hasRole("ROLE_ADMIN"))
-            throw new ValidationException(new CustomError("assignedTo", "Assigned to user must be current user or admin"));
     }
 
     private void validateUpdateTask(Task task) throws ValidationException {
@@ -89,7 +91,7 @@ public class TaskServiceImpl implements TaskService {
 
         // not allow to change status after end date
         if (task.getStatus() != null && task.getEndDate().isBefore(task.getEndDate()))
-            throw new ValidationException(new CustomError("status", "Not allowed to change status after end date"));
+            throw new ValidationException(new CustomError("Status", "Not allowed to change status after end date"));
 
         // not allow to change assignedTo if not admin
         User currentUser = (User) authentication.getPrincipal();
