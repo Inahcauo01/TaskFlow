@@ -23,8 +23,6 @@ public class UserMapper {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .roles(user.getAuthorities().stream().map(SimpleGrantedAuthority::getAuthority).collect(Collectors.toSet()))
-                .createdTasks(user.getCreatedTasks().stream().map(Task::getTitle).collect(Collectors.toSet()))
-                .assignedTasks(user.getAssignedTasks().stream().map(Task::getTitle).collect(Collectors.toSet()))
                 .enabled(user.isEnabled())
                 .jetons(user.getJetons())
                 .build();

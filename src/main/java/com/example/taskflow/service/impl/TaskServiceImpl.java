@@ -133,7 +133,7 @@ public class TaskServiceImpl implements TaskService {
 
     }
 
-    private User getCurrentUser() {
+    public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (User) authentication.getPrincipal();
     }
