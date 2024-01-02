@@ -43,14 +43,12 @@ public class TaskController {
     public ResponseEntity<Response<TaskDto>> createTask(@RequestBody @Valid TaskDto taskDto) throws ValidationException {
         Response<TaskDto> response = new Response<>();
         Task task = TaskMapper.toEntity(taskDto);
-//        User createdByUser = userService.findByUsername(taskDto.getCreatedBy());
         User assignedToUser = userService.findByUsername(taskDto.getAssignedTo());
 
         Set<Tag> tags = taskDto.getTags().stream()
                 .map(tagName -> tagService.findOrCreateTag(tagName))
                 .collect(Collectors.toSet());
 
-//        task.setCreatedBy(createdByUser);
         task.setAssignedTo(assignedToUser);
         task.setTags(tags);
         TaskDto savedTaskDto = TaskMapper.toDto(taskService.save(task));
@@ -60,4 +58,23 @@ public class TaskController {
         return ResponseEntity.ok().body(response);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Response<TaskDto>> updateTask(@PathVariable Long id, @RequestBody @Valid TaskDto taskDto) throws ValidationException {
+        Response<TaskDto> response = new Response<>();
+        Task task = TaskMapper.toEntity(taskDto);
+        User assignedToUser = userService.findByUsername(taskDto.getAssignedTo());
+
+        Set<Tag> tags = taskDto.getTags().stream()
+                .map(tagName -> tagService.findOrCreateTag(tagName))
+                .collect(Collectors.toSet());
+
+        task.setId(id);
+        task.setAssignedTo(assignedToUser);
+        task.setTags(tags);
+        TaskDto updatedTaskDto = TaskMapper.toDto(taskService.update(task));
+
+        response.setResult(updatedTaskDto);
+        response.setMessage("Task updated successfully");
+        return ResponseEntity.ok().body(response);
+    }
 }

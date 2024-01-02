@@ -40,6 +40,9 @@ public class User implements UserDetails {
     private Set<Task> assignedTasks;
 
 
+    @Column(nullable = false)
+    private int jetons = 2;
+
     @Override
     public List<SimpleGrantedAuthority> getAuthorities() {
         return authorities.stream()
@@ -75,5 +78,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public boolean hasRole(String role) {
+        return getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals(role));
     }
 }

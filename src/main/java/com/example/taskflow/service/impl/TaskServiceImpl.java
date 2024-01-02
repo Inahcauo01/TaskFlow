@@ -2,6 +2,7 @@ package com.example.taskflow.service.impl;
 
 import com.example.taskflow.domain.Task;
 import com.example.taskflow.domain.User;
+import com.example.taskflow.domain.enums.TaskStatus;
 import com.example.taskflow.repository.TaskRepository;
 import com.example.taskflow.service.TaskService;
 import com.example.taskflow.utils.CustomError;
@@ -17,6 +18,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
+
+    private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
 
     @Override
     public List<Task> findAll() {
@@ -43,8 +47,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task update(Task task) {
-        // TODO: validate task
+    public Task update(Task task) throws ValidationException {
+        validateUpdateTask(task);
+
+        if (task.getEndDate().isBefore(task.getEndDate()))
+            task.setStatus(TaskStatus.valueOf("UNDONE"));
+
         return taskRepository.save(task);
     }
 
@@ -67,5 +75,22 @@ public class TaskServiceImpl implements TaskService {
         // check if task title is unique
         if (taskRepository.existsByTitle(task.getTitle()))
             throw new ValidationException(new CustomError("title", "Task with title " + task.getTitle() + " already exists"));
+
+        // check if assigned to user must be current user or admin
+        User currentUser = (User) authentication.getPrincipal();
+        if (!task.getAssignedTo().equals(currentUser) && !currentUser.hasRole("ROLE_ADMIN"))
+            throw new ValidationException(new CustomError("assignedTo", "Assigned to user must be current user or admin"));
+    }
+
+    private void validateUpdateTask(Task task) throws ValidationException {
+        // check if changed status is changed to DONE after end date
+        if (task.getStatus().toString().equals("DONE") && task.getEndDate().isAfter(task.getEndDate()))
+            throw new ValidationException(new CustomError("status", "Status cannot be changed to DONE after end date"));
+
+        // check if changed status is changed to IN_PROGRESS before start date
+        if (task.getStatus().toString().equals("IN_PROGRESS") && task.getStartDate().isBefore(task.getStartDate()))
+            throw new ValidationException(new CustomError("status", "Status cannot be changed to IN_PROGRESS before start date"));
+
+
     }
 }

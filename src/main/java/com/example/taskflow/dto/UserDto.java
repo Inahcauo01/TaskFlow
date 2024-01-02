@@ -27,4 +27,6 @@ public class UserDto {
 
     private Set<String> assignedTasks;
 
+    private int jetons = 2;
+
 }

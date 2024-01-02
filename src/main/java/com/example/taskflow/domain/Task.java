@@ -44,4 +44,5 @@ public class Task {
     @JoinColumn(name = "assigned_to_id")
     private User assignedTo;
 
+    private boolean remplaced;
 }

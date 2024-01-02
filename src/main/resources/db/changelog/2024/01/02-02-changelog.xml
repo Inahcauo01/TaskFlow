@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1704157945690-1" author="Youcode (generated)">
+        <addColumn tableName="user">
+            <column name="jetons" type="INT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1704157945690-2" author="Youcode (generated)">
+        <addNotNullConstraint columnDataType="INT" columnName="jetons" tableName="user"/>
+    </changeSet>
+    <changeSet id="1704157945690-3" author="Youcode (generated)">
+        <addColumn tableName="task">
+            <column name="remplaced" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1704157945690-4" author="Youcode (generated)">
+        <addNotNullConstraint columnDataType="BOOLEAN" columnName="remplaced" tableName="task"/>
+    </changeSet>
+
+</databaseChangeLog>
