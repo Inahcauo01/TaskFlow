@@ -6,7 +6,7 @@ spring:
 
   # Database Configuration
   datasource:
-    url: jdbc:mysql://localhost:3306/task_flow?createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3306/task_flow_v1?createDatabaseIfNotExist=true
     username: root
     password:
   liquibase:

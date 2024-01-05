@@ -46,4 +46,8 @@ public class Task implements Serializable {
 
     @Builder.Default
     private boolean remplaced = false;
+
+    @OneToOne(mappedBy = "task")
+    private Order replacementOrder;
+
 }
