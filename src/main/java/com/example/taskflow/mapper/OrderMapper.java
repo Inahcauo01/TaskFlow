@@ -15,7 +15,7 @@ public class OrderMapper {
                 .creationDate(order.getCreationDate())
                 .taskId(order.getTask().getId())
                 .requestedBy(order.getRequestedBy().getUsername())
-                .assignedBy(order.getAssignedBy() != null ? order.getAssignedBy().getUsername() : null)
+                .assignedBy(order.getAssignedTo() != null ? order.getAssignedTo().getUsername() : null)
                 .build();
     }
 

@@ -33,6 +33,6 @@ public class Order {
     private User requestedBy;
 
     @ManyToOne
-    @JoinColumn(name = "assigned_by_id")
-    private User assignedBy;
+    @JoinColumn(name = "assigned_to_id")
+    private User assignedTo;
 }

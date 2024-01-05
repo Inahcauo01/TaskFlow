@@ -30,24 +30,5 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping
-    public ResponseEntity<Response<Order>> save(@RequestBody @Valid OrderDto orderDto) {
-        Response<Order> response = new Response<>();
-        response.setResult(orderService.save(Order.builder()
-                .status(OrderStatus.valueOf(orderDto.getStatus()))
-                .task(Task.builder()
-                        .id(orderDto.getTaskId())
-                        .build()
-                )
-                .requestedBy(User.builder()
-                                .username(orderDto.getRequestedBy())
-                                .build()
-                )
-                .assignedBy(User.builder()
-                        .username(orderDto.getAssignedBy())
-                        .build())
-                .build()));
-        return ResponseEntity.ok(response);
-    }
 
 }

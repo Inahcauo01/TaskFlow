@@ -8,7 +8,6 @@ import com.example.taskflow.mapper.TaskMapper;
 import com.example.taskflow.service.TagService;
 import com.example.taskflow.service.TaskService;
 import com.example.taskflow.service.UserService;
-import com.example.taskflow.utils.CustomError;
 import com.example.taskflow.utils.Response;
 import com.example.taskflow.utils.ValidationException;
 import jakarta.validation.Valid;
@@ -53,7 +52,7 @@ public class TaskController {
         }
 
         Set<Tag> tags = taskDto.getTags().stream()
-                .map(tagName -> tagService.findOrCreateTag(tagName))
+                .map(tagService::findOrCreateTag)
                 .collect(Collectors.toSet());
 
         task.setTags(tags);
@@ -89,7 +88,7 @@ public class TaskController {
         }
 
         Set<Tag> tags = taskDto.getTags().stream()
-                .map(tagName -> tagService.findOrCreateTag(tagName))
+                .map(tagService::findOrCreateTag)
                 .collect(Collectors.toSet());
 
         task.setId(id);
@@ -102,7 +101,7 @@ public class TaskController {
     }
 
     @GetMapping("/my-tasks")
-    public ResponseEntity<Response<List<TaskDto>>> findMyTasks() throws ValidationException {
+    public ResponseEntity<Response<List<TaskDto>>> findMyTasks() {
         Response<List<TaskDto>> response = new Response<>();
         List<TaskDto> taskList = taskService.findMyTasks().stream()
                 .map(TaskMapper::toDto)
@@ -113,13 +112,13 @@ public class TaskController {
         return ResponseEntity.ok().body(response);
     }
 
-    // remplace a task
-    @PutMapping("/{id}/remplace")
-    public ResponseEntity<Response<TaskDto>> remplaceTask(@PathVariable Long id) throws ValidationException {
+
+    @PutMapping("/{id}/replace")
+    public ResponseEntity<Response<TaskDto>> replaceTaskOrder(@PathVariable Long id) throws ValidationException {
         Response<TaskDto> response = new Response<>();
         TaskDto updatedTaskDto = TaskMapper.toDto(taskService.remplaceTask(id));
         response.setResult(updatedTaskDto);
-        response.setMessage("Demanded task remplaced successfully");
+        response.setMessage("Your demand has been sent successfully");
         return ResponseEntity.ok().body(response);
     }
 }

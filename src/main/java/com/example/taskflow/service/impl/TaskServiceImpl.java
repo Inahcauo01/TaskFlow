@@ -4,6 +4,7 @@ import com.example.taskflow.domain.Task;
 import com.example.taskflow.domain.User;
 import com.example.taskflow.domain.enums.TaskStatus;
 import com.example.taskflow.repository.TaskRepository;
+import com.example.taskflow.service.OrderService;
 import com.example.taskflow.service.TaskService;
 import com.example.taskflow.service.UserService;
 import com.example.taskflow.utils.CustomError;
@@ -20,6 +21,7 @@ import java.util.List;
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final UserService userService;
+    private final OrderService orderService;
 
 
     @Override
@@ -76,11 +78,14 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task remplaceTask(Long id) throws ValidationException {
         User currentUser = getCurrentUser();
-
         Task task = findById(id);
+
+        // create an order
+        orderService.createOrder(task);
+
         task.setRemplaced(true);
         if (currentUser.getJetons()<1)
-            throw new ValidationException(new CustomError("jetons", "You don't have enough jetons"));
+            throw new ValidationException(new CustomError("Jetons", "You don't have enough jetons"));
         currentUser.setJetons(currentUser.getJetons()-1);
         return update(task);
     }
