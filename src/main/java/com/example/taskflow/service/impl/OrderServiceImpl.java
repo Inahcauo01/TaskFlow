@@ -22,6 +22,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<Order> findAllByStatus(String status) {
+        return orderRepository.findAllByStatus(status);
+    }
+
+    @Override
     public Order findById(Long id) throws ValidationException {
         return orderRepository.findById(id).orElseThrow(
                 () -> new ValidationException(new CustomError("id", "Order not found"))
@@ -41,9 +46,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void deleteById(Long id) throws ValidationException {
-        if (!isExist(id)) {
+        if (!isExist(id))
             throw new ValidationException(new CustomError("id", "Order not found"));
-        }
         orderRepository.deleteById(id);
     }
 

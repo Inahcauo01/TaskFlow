@@ -9,6 +9,7 @@ import java.util.List;
 @Service
 public interface OrderService {
     List<Order> findAll();
+    List<Order> findAllByStatus(String status);
     Order findById(Long id) throws ValidationException;
     Order save(Order order);
     Order update(Order order);
